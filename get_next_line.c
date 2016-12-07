@@ -6,7 +6,7 @@
 /*   By: pbourlet <pbourlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 13:58:47 by pbourlet          #+#    #+#             */
-/*   Updated: 2016/12/06 22:11:38 by pbourlet         ###   ########.fr       */
+/*   Updated: 2016/12/07 14:57:27 by pbourlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,25 @@
 
 t_gnl	*ft_create(t_gnl *list, int fd)
 {
-	if (!(list = malloc(sizeof(char*) + sizeof(int) * 3 + sizeof(t_gnl*))))
+	if (!(list = malloc(sizeof(char*) + sizeof(int) * 3 + sizeof(t_gnl*)))
+			|| !(list->str = ft_strnew(BUFF_SIZE)))
 		return (NULL);
 	list->next = NULL;
 	list->fd = fd;
+	if (!read(list->fd, list->str, BUFF_SIZE))
+		return (NULL);
 	list->ret = 1;
 	list->eof = 0;
-	list->str = ft_strnew(0);
 	return (list);
 }
 
-t_gnl	*ft_test(t_gnl *list, int *i)
+t_gnl	*ft_test(t_gnl *list)//, int *i)
 {
 	char	*buffer;
 	char	*tmp;
 
-	*i = 0;
-	if (!(buffer = ft_strnew(BUFF_SIZE)) || !list->str)
+//	*i = 0;
+	if (!(buffer = ft_strnew(BUFF_SIZE)))
 		return (NULL);
 	while (!ft_strchr(list->str, '\n') && !list->eof)
 	{
@@ -44,10 +46,11 @@ t_gnl	*ft_test(t_gnl *list, int *i)
 		ft_strclr(buffer);
 	}
 	free(buffer);
-	tmp = list->str;
-	while (tmp[*i] != '\n' && tmp[*i])
-		*i += 1;
 	return (list);
+//tmp = list->str;
+//	while (tmp[*i] != '\n' && tmp[*i])
+//		*i += 1;
+//	return (list);
 }
 
 int		get_next_line(const int fd, char **line)
@@ -56,18 +59,20 @@ int		get_next_line(const int fd, char **line)
 	int				i;
 	char			*tmp;
 
-	if (fd < 0 || !line)
+	i = 0;
+	if (fd < 0 || !line || (list ? 0 : !(list = ft_create(list, fd))))
 		return (-1);
-	if (!list)
-		list = ft_create(list, fd);
-	list = ft_test(list, &i);
+	list = ft_test(list);//, &i);
 	if (!list)
 		return (-1);
 	if ((list->str[0] == '\0' && list->eof))
 	{
 		free(list);
+		list = NULL;
 		return (0);
 	}
+	while (list->str[i] != '\n' && list->str[i])
+		i++;
 	*line = ft_strsub(list->str, 0, i);
 	tmp = list->str;
 	list->str = ft_strdup(tmp + i + 1);
