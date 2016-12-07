@@ -6,7 +6,7 @@
 /*   By: pbourlet <pbourlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/29 16:03:12 by pbourlet          #+#    #+#             */
-/*   Updated: 2016/12/06 21:10:39 by pbourlet         ###   ########.fr       */
+/*   Updated: 2016/12/07 19:39:40 by pbourlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ typedef	struct		s_gnl
 {
 	char			*str;
 	int				fd;
-	int				ret;
 	int				eof;
 	struct s_gnl	*next;
 }					t_gnl;

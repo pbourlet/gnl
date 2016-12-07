@@ -6,7 +6,7 @@
 /*   By: pbourlet <pbourlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 13:58:47 by pbourlet          #+#    #+#             */
-/*   Updated: 2016/12/07 20:35:34 by pbourlet         ###   ########.fr       */
+/*   Updated: 2016/12/07 20:07:20 by pbourlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,6 @@ t_gnl	*ft_create(t_gnl *b, int fd, t_gnl **list)
 	return (b);
 }
 
-int		ft_finish(t_gnl **list)
-{
-	t_gnl	*f[2];
-
-	f[0] = *list;
-	while (f[0])
-	{
-		f[1] = f[0];
-		f[0] = f[0]->next;
-		free(f[1]->str);
-		free(f[1]);
-	}
-	*list = NULL;
-	return (0);
-}
-
 int		get_next_line(const int fd, char **line)
 {
 	static t_gnl	*b = NULL;
@@ -78,7 +62,7 @@ int		get_next_line(const int fd, char **line)
 	}
 	free(str[0]);
 	if (!(i = 0) && l->str[0] == '\0' && l->eof)
-		return (ft_finish(&b));
+		return (0);
 	while (l->str[i] && l->str[i] != '\n')
 		i++;
 	*line = ft_strsub(l->str, 0, i);
